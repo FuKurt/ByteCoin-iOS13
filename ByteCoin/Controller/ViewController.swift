@@ -23,18 +23,19 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         currencyPicker.delegate = self
     }
     
+    //Shows columns number
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-    
+    //Shows rows number
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return coinManager.currencyArray.count
     }
-    
+    //Shows rows' data
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return coinManager.currencyArray[row]
     }
-    
+    //Gives row's index that is choosen
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let selectedCurrency = coinManager.currencyArray[row]
         coinManager.getCoinPreis(for: selectedCurrency)
