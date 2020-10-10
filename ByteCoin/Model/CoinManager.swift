@@ -1,14 +1,14 @@
-//
-//  CoinManager.swift
-//  ByteCoin
-//
-//  Created by Angela Yu on 11/09/2019.
-//  Copyright © 2019 The App Brewery. All rights reserved.
-//
-
 import Foundation
 
+protocol CoinManagerDelegate {
+    func didUpdatePrice(price: String)
+    func didUpdateCurrency(currency : String)
+    func didFailWithError(error: Error)
+}
+
 struct CoinManager {
+    
+    var delegate : CoinManagerDelegate?
     
     let baseURL = "https://rest.coinapi.io/v1/exchangerate/BTC"
     let apiKey = "14CD40A7-423F-449F-A8CF-CBA90EBF8358"
@@ -18,6 +18,7 @@ struct CoinManager {
     func getCoinPreis(for currency : String) {
         let urlString = "\(baseURL)/\(currency)?apikey=\(apiKey)"
         let dataUrl = urlString
+        self.delegate?.didUpdateCurrency(currency: currency)
         performRequest(with: dataUrl)
     }
     
@@ -26,12 +27,13 @@ struct CoinManager {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { (data , response, error) in
                 if error != nil{
-                    print("something is wrong")
+                    self.delegate?.didFailWithError(error: error!)
                     return
                 }
                 if let safeData = data {
                     if let price = self.parseJSON(safeData) {
-                        print(price)
+                        let priceString = String(format: "%.2f", price)
+                        self.delegate?.didUpdatePrice(price: priceString)
                     }
                 }
             }
